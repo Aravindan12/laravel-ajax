@@ -3,10 +3,15 @@
 namespace App\Http\Controllers;
 
 use App\Student;
+use Response;
 use Illuminate\Http\Request;
 
 class StudentController extends Controller
 {
+    public function __construct(Student $students)
+    {
+       $this->students = $students;
+    }
     /**
      * Display a listing of the resource.
      *
@@ -15,6 +20,8 @@ class StudentController extends Controller
     public function index()
     {
         //
+        $data['students'] = Student::orderBy('id','desc')->paginate(5);   
+        return view('student.list',$data);
     }
 
     /**
@@ -25,6 +32,7 @@ class StudentController extends Controller
     public function create()
     {
         //
+        
     }
 
     /**
@@ -36,6 +44,13 @@ class StudentController extends Controller
     public function store(Request $request)
     {
         //
+        $student = new Student([
+            'first_name' => $request->post('txtFirstName'),
+            'last_name'=> $request->post('txtLastName'),
+            'address'=> $request->post('txtAddress')
+        ]);
+ $student->save();    
+        return Response::json($student);
     }
 
     /**
